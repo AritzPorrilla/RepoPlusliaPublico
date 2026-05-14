@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "Pluslia Mobile",
+    "slug": "pluslia-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "platforms": ["ios", "android", "web"],
+    "sdkVersion": "55.0.0",
+    "assetBundlePatterns": ["**/*"]
+  }
+}

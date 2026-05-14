@@ -1,0 +1,32 @@
+name: job-scheduler
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+      - master
+  pull_request:
+    branches:
+      - develop
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  validate-jobs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+
+      - name: Validate scheduler and jobs syntax
+        run: |
+          find app/Jobs -name "*.php" -exec php -l {} \;
+          php -l routes/console.php

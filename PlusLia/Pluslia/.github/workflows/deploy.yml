@@ -1,0 +1,33 @@
+name: deploy
+
+on:
+  workflow_run:
+    workflows: ["tests"]
+    branches: [main]
+    types: [completed]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Deploy
+        run: |
+          cd /var/www/pluslia
+
+          git pull origin main
+
+          # Rebuild the app image (compiles frontend assets + installs PHP deps)
+          docker compose build app
+
+          # Recreate the container with the new image
+          docker compose up -d --no-deps --force-recreate app
+
+          # Wait for the container to be healthy
+          sleep 5
+
+          docker exec example_app php artisan migrate --force
+          docker exec example_app php artisan queue:restart
+
+          echo "Deploy completado: $(date)"
